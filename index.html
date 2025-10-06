@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Braço do Violão Interativo</title>
+  <style>
+    :root {
+      --trastes: 13;
+      --cordas: 6;
+    }
+
+    body {
+      background: #1a1a1a;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 1rem;
+    }
+
+    h1 {
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .fretboard {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(var(--trastes), 1fr);
+      grid-template-rows: repeat(var(--cordas), 1fr);
+      gap: 6px; /* espaçamento entre notas */
+      background: linear-gradient(90deg, #8B5A2B, #A56B35);
+      border: 3px solid #000;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.6);
+      transform: scaleX(-1); /* espelha o braço */
+      overflow: hidden;
+      width: 600px; /* largura fixa */
+      max-width: 90vw;
+      aspect-ratio: 13 / 6; /* mantém proporção aproximada */
+      padding: 6px;
+    }
+
+    /* Trastes */
+    .fretboard::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: repeating-linear-gradient(
+        to right,
+        transparent 0,
+        transparent calc(100% / var(--trastes) - 1px),
+        #222 calc(100% / var(--trastes) - 1px),
+        #222 calc(100% / var(--trastes))
+      );
+      pointer-events: none;
+    }
+
+    /* Cordas */
+    .fretboard::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(to bottom,
+          rgba(255,255,255,0.4) 1px,
+          transparent 1px
+        );
+      background-size: 100% calc(100% / var(--cordas));
+      pointer-events: none;
+    }
+
+    .cell {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .note {
+      background: #000;
+      color: white;
+      border-radius: 50%;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      font-size: clamp(10px, 2vw, 16px);
+      transition: 0.2s;
+      transform: scaleX(-1); /* reespelha texto */
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+    }
+
+    .note:hover {
+      background: gold;
+      color: black;
+      transform: scaleX(-1) scale(1.15);
+      box-shadow: 0 0 8px gold;
+    }
+
+    .note.playing {
+      background: lightgreen;
+      color: black;
+      transform: scaleX(-1) scale(1.05);
+      box-shadow: 0 0 10px lightgreen;
+    }
+
+    /* Marcadores das casas */
+    .marker {
+      position: absolute;
+      bottom: -18px;
+      width: 12px;
+      height: 12px;
+      background: white;
+      border-radius: 50%;
+      box-shadow: 0 0 5px #000;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      background: #ffcc00;
+      color: #000;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #ffd633;
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 600px) {
+      .note {
+        width: 32px;
+        height: 32px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Braço do Violão Interativo</h1>
+  <div class="fretboard" id="fretboard"></div>
+  <button id="stopAll">Parar Tudo</button>
+
+  <script>
+    // Notas (0 a 12 casas)
+    const notas = [
+      ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#","E"], 
+      ["A","A#","B","C","C#","D","D#","E","F","F#","G","G#","A"],
+      ["D","D#","E","F","F#","G","G#","A","A#","B","C","C#","D"],
+      ["G","G#","A","A#","B","C","C#","D","D#","E","F","F#","G"],
+      ["B","C","C#","D","D#","E","F","F#","G","G#","A","A#","B"],
+      ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#","E"] 
+    ];
+
+    // Frequências base (cordas 6 → 1)
+    const cordaBaseFreq = [82.41, 110.00, 146.83, 196.00, 246.94, 329.63];
+
+    const fretboard = document.getElementById("fretboard");
+    const stopAllBtn = document.getElementById("stopAll");
+
+    // Web Audio API
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    let tocando = new Map();
+
+    function freqDaNota(corda, casa) {
+      const base = cordaBaseFreq[corda];
+      return base * Math.pow(2, casa / 12);
+    }
+
+    function tocarNota(corda, casa, el) {
+      if (tocando.has(el)) {
+        let { osc, gain } = tocando.get(el);
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+        osc.stop(audioCtx.currentTime + 0.3);
+        tocando.delete(el);
+        el.classList.remove("playing");
+      } else {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = "sine";
+        osc.frequency.value = freqDaNota(corda, casa);
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+        osc.start();
+        tocando.set(el, { osc, gain });
+        el.classList.add("playing");
+      }
+    }
+
+    // Montar o braço
+    for (let corda = 0; corda < 6; corda++) {
+      for (let casa = 0; casa <= 12; casa++) {
+        const cell = document.createElement("div");
+        cell.classList.add("cell");
+
+        const note = document.createElement("div");
+        note.classList.add("note");
+        note.innerText = notas[corda][casa];
+        note.addEventListener("click", () => tocarNota(corda, casa, note));
+
+        cell.appendChild(note);
+        fretboard.appendChild(cell);
+      }
+    }
+
+    // Botão "Parar Tudo"
+    stopAllBtn.addEventListener("click", () => {
+      tocando.forEach(({osc, gain}, el) => {
+        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+        osc.stop(audioCtx.currentTime + 0.3);
+        el.classList.remove("playing");
+      });
+      tocando.clear();
+    });
+
+    // Marcadores das casas (5, 7 e 12)
+    [5, 7, 12].forEach(fret => {
+      const marker = document.createElement("div");
+      marker.classList.add("marker");
+      const pos = (fret + 0.5) * (100 / 13);
+      marker.style.right = `${pos}%`;
+      fretboard.appendChild(marker);
+    });
+  </script>
+</body>
+</html>
