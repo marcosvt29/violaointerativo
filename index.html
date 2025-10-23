@@ -1,244 +1,982 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Braço do Violão Interativo</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Guitar Chords — Modo Guitarrista</title>
   <style>
-    :root {
-      --trastes: 13;
-      --cordas: 6;
-    }
-
-    body {
-      background: #1a1a1a;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      color: white;
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 1rem;
-    }
-
-    h1 {
-      margin-bottom: 15px;
-      text-align: center;
-    }
-
-    .fretboard {
-      position: relative;
-      display: grid;
-      grid-template-columns: repeat(var(--trastes), 1fr);
-      grid-template-rows: repeat(var(--cordas), 1fr);
-      gap: 6px; /* espaçamento entre notas */
-      background: linear-gradient(90deg, #8B5A2B, #A56B35);
-      border: 3px solid #000;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0,0,0,0.6);
-      transform: scaleX(-1); /* espelha o braço */
+      
+       #paypal-donate-mobile {
+      position: fixed;
+      right: 0;
+      top: 50%;
+      transform: translateY(-50%);
+      background-color: #0070ba;
+      border-radius: 30px 0 0 30px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      z-index: 1000;
+      transition: width 0.3s;
       overflow: hidden;
-      width: 600px; /* largura fixa */
-      max-width: 90vw;
-      aspect-ratio: 13 / 6; /* mantém proporção aproximada */
-      padding: 6px;
+      width: 50px; /* apenas o emoji visível */
+      cursor: pointer;
     }
 
-    /* Trastes */
-    .fretboard::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: repeating-linear-gradient(
-        to right,
-        transparent 0,
-        transparent calc(100% / var(--trastes) - 1px),
-        #222 calc(100% / var(--trastes) - 1px),
-        #222 calc(100% / var(--trastes))
-      );
-      pointer-events: none;
-    }
-
-    /* Cordas */
-    .fretboard::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-image: 
-        linear-gradient(to bottom,
-          rgba(255,255,255,0.4) 1px,
-          transparent 1px
-        );
-      background-size: 100% calc(100% / var(--cordas));
-      pointer-events: none;
-    }
-
-    .cell {
+    #paypal-donate-mobile a {
       display: flex;
-      justify-content: center;
       align-items: center;
-    }
-
-    .note {
-      background: #000;
+      justify-content: center;
+      height: 50px;
       color: white;
-      border-radius: 50%;
-      width: 38px;
-      height: 38px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      cursor: pointer;
-      font-size: clamp(10px, 2vw, 16px);
-      transition: 0.2s;
-      transform: scaleX(-1); /* reespelha texto */
-      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
-    }
-
-    .note:hover {
-      background: gold;
-      color: black;
-      transform: scaleX(-1) scale(1.15);
-      box-shadow: 0 0 8px gold;
-    }
-
-    .note.playing {
-      background: lightgreen;
-      color: black;
-      transform: scaleX(-1) scale(1.05);
-      box-shadow: 0 0 10px lightgreen;
-    }
-
-    /* Marcadores das casas */
-    .marker {
-      position: absolute;
-      bottom: -18px;
-      width: 12px;
-      height: 12px;
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0 0 5px #000;
-    }
-
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      font-size: 16px;
-      border-radius: 8px;
-      border: none;
-      cursor: pointer;
-      background: #ffcc00;
-      color: #000;
+      text-decoration: none;
+      font-size: 20px;
       font-weight: bold;
-      transition: 0.2s;
+      white-space: nowrap;
     }
 
-    button:hover {
-      background: #ffd633;
-      transform: scale(1.05);
+    #paypal-donate-mobile a span {
+      display: none;
+      margin-left: 5px;
+      font-size: 16px;
     }
 
+    /* Ao tocar/clicar no botão (ou hover no desktop) */
+    #paypal-donate-mobile:hover,
+    #paypal-donate-mobile:active {
+      width: 120px; /* mostra o texto */
+    }
+
+    #paypal-donate-mobile:hover a span,
+    #paypal-donate-mobile:active a span {
+      display: inline;
+    }
+
+    /* Responsivo para mobile */
     @media (max-width: 600px) {
-      .note {
-        width: 32px;
-        height: 32px;
+      #paypal-donate-mobile {
+        bottom: 20px;
+        top: auto;
+        right: 10px;
+        width: 50px;
+        border-radius: 30px;
+        transform: none;
       }
     }
+      
+      
+            
+      
+      
+      
+      
+      
+      
+      
+   :root {
+  --trastes: 13; /* mostrado até 12 (0..12) — você pode ajustar */
+  --cordas: 6;
+  --cell-w: 56px;
+  --cell-h: 44px;
+  --gap: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #F2E5CF;
+  color: #A45828;
+  font-family: Arial, Helvetica, sans-serif;
+  padding: 40px 20px;
+}
+
+.wrap {
+  width: min(1100px, 96vw);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
+
+.controls-row {
+  width: 100%;
+  display:flex;
+  gap:12px;
+  align-items: center;
+  justify-content: center;
+  flex-wrap:wrap;
+}
+
+/* selects area (ajustado visual) */
+.controls-row label { font-weight:700; color:#6b3e20; }
+.controls-row select, .controls-row button {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  background: #fff;
+  color: #333;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  transition: transform .12s;
+}
+.controls-row select:hover, .controls-row button:hover { transform: translateY(-2px); }
+
+/* destaque do nome do acorde */
+#selectedChordName {
+  font-weight: 800;
+  font-size: 1.1rem;
+  color: #7a4318;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: #fff2df;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+/* botões principais */
+.primary {
+  background: #2ecc71;
+  color: #042;
+  font-weight: 700;
+  padding:8px 14px;
+  border-radius:10px;
+}
+.secondary {
+  background: #ffc857;
+  color: #2a1800;
+  font-weight:700;
+  padding:8px 12px;
+  border-radius:10px;
+}
+
+/* fretboard wrapper */
+.board-wrap {
+  background: #DBCDA4;
+  padding: 16px;
+  border-radius: 16px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.1);
+  display: inline-block;
+}
+
+/* fretboard grid (vertical layout) */
+.fretboard {
+  display: grid;
+  grid-template-columns: repeat(var(--cordas), var(--cell-w));
+  grid-template-rows: repeat(var(--trastes), var(--cell-h));
+  gap: var(--gap);
+  justify-content: center;
+  align-content: center;
+  background: #DBCDA4;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+/* individual cell */
+.cell {
+  background: #4E3B29;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: #eee;
+  cursor: pointer;
+  transition: transform .12s, background .12s, box-shadow .12s;
+  user-select: none;
+}
+.cell:hover { transform: translateY(-3px); background: #555; }
+.cell.acorde { background: #ffb347; color: #111; font-weight:700; box-shadow: 0 8px 30px rgba(255,180,71,.14); }
+.cell.playing { background: #ffd700; color: #000; font-weight:800; box-shadow: 0 8px 30px rgba(255,215,0,.18); }
+
+/* legend row */
+.legend {
+  display:flex;
+  gap:8px;
+  justify-content:center;
+  margin-top:8px;
+  flex-wrap:wrap;
+}
+
+/* favoritos */
+.fav-chip {
+  background: #fff;
+  padding: 6px 10px;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  display:flex;
+  gap:8px;
+  align-items:center;
+  font-weight:600;
+  cursor:pointer;
+}
+.fav-chip button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  font-weight:700;
+}
+.fav-chip .remove {
+  color: #b33;
+}
+
+/* responsividade */
+@media (max-width: 900px) {
+  :root { --cell-w: 44px; --cell-h: 36px; }
+  select, button { font-size: 14px; padding: 8px 12px; }
+}
+@media (max-width: 480px) {
+  :root { --cell-w: 34px; --cell-h: 30px; }
+  .wrap { gap: 20px; }
+  select, button { font-size: 13px; padding: 8px; }
+}
   </style>
 </head>
 <body>
-  <h1>Braço do Violão Interativo</h1>
-  <div class="fretboard" id="fretboard"></div>
-  <button id="stopAll">Parar Tudo</button>
+   
+  <!-- Botão de Doação Flutuante Mobile-Friendly -->
+  <div id="paypal-donate-mobile">
+    <a href="https://www.paypal.com/donate?hosted_button_id=SEU_ID_AQUI" target="_blank">
+      💖<span> Doar</span>
+    </a>
+  </div>
+
+    
+        
+    
+  <div class="wrap">
+    <h1>🎸 Visualizador de Acordes</h1>
+
+    <!-- container de selects (nota / tipo / extensão) -->
+    <div class="controls-row" id="controlsRow">
+      <label for="selectNota"></label>
+      <select id="selectNota" aria-label="Nota base">
+        <option value="C">C</option>
+        <option value="C#">C#/Db</option>
+        <option value="D">D</option>
+        <option value="D#">D#/Eb</option>
+        <option value="E">E</option>
+        <option value="F">F</option>
+        <option value="F#">F#/Gb</option>
+        <option value="G">G</option>
+        <option value="G#">G#/Ab</option>
+        <option value="A">A</option>
+        <option value="A#">A#/Bb</option>
+        <option value="B">B</option>
+      </select>
+
+      <label for="selectTipo"></label>
+      <select id="selectTipo" aria-label="Tipo principal do acorde">
+        <option value="maior">Maior</option>
+        <option value="menor">Menor</option>
+        <option value="dim">Dim</option>
+        <option value="aug">Aug</option>
+        <option value="sus2">sus2</option>
+        <option value="sus4">sus4</option>
+      </select>
+
+      <label for="selectExt"></label>
+      <select id="selectExt" aria-label="Extensão do acorde">
+        <option value="none">Nenhuma</option>
+        <option value="7">7</option>
+        <option value="7M">7M</option>
+        <option value="add9">add9</option>
+        <option value="6">6</option>
+        <option value="b6">b6</option>
+      </select>
+
+      <label for="selectExt02"></label>
+      <select id="selectExt02" aria-label="Extensão do acorde02">
+        <option value="none">Nenhuma</option>
+        <option value="5-">(5-)</option>
+        <option value="5+">(5+)</option>
+        <option value="9">(9)</option>
+        <option value="b9">(b9)</option>
+        <option value="9#">(9#)</option>
+        <option value="11">(11)</option>
+        <option value="13">(13)</option>
+        <option value="b13">(b13)</option>
+      </select>
+
+      <label for="selectExt03"></label>
+      <select id="selectExt03" aria-label="Extensão do acorde03">
+        <option value="none">Nenhuma</option>
+        <option value="/C">/C</option>
+        <option value="/D">/D</option>
+        <option value="/E">/E</option>
+        <option value="/F">/F</option>
+        <option value="/G">/G</option>
+        <option value="/B">/B</option>
+        <option value="/A">/A</option>
+      </select>
+
+      <!-- nome do acorde exibido automaticamente -->
+      <div id="selectedChordName" aria-live="polite">—</div>
+    </div>
+
+    <div class="controls-row" style="margin-top:6px;">
+      <button id="btnTocar" class="primary">Tocar acorde</button>
+      <button id="btnParar" class="secondary">Parar</button>
+    </div>
+
+    <!-- Favoritos -->
+    <div class="controls-row" id="favoritesControls" style="flex-direction:column; align-items:center; gap:8px; margin-top:8px;">
+      <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <button id="btnSalvarFav" class="secondary" title="Salvar acorde atual como favorito">Salvar</button>
+        <button id="btnLimparFavs" class="secondary" title="Limpar todos os favoritos">Limpar favoritos</button>
+        <div id="favStatus" aria-live="polite" style="font-size:0.9rem;"></div>
+      </div>
+
+      <div id="favoritesList" style="display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin-top:6px;"></div>
+    </div>
+
+    <div class="board-wrap" style="position:relative; display:inline-block; margin-top:8px;">
+      <div class="fretboard" id="fretboard"></div>
+      <div class="legend"></div>
+    </div>
+
+  </div>
 
   <script>
-    // Notas (0 a 12 casas)
-    const notas = [
-      ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#","E"], 
-      ["A","A#","B","C","C#","D","D#","E","F","F#","G","G#","A"],
-      ["D","D#","E","F","F#","G","G#","A","A#","B","C","C#","D"],
-      ["G","G#","A","A#","B","C","C#","D","D#","E","F","F#","G"],
-      ["B","C","C#","D","D#","E","F","F#","G","G#","A","A#","B"],
-      ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#","E"] 
-    ];
+  /************************************************************************
+   * CONFIGURAÇÃO E DADOS
+   ************************************************************************/
 
-    // Frequências base (cordas 6 → 1)
-    const cordaBaseFreq = [164.82, 220.00, 293.66, 392.00, 493.88, 649.26];
+  const trastes = 13; // casas 0..12 inclusive (ajuste se quiser menos)
+  const cordas = 6;
 
-    const fretboard = document.getElementById("fretboard");
-    const stopAllBtn = document.getElementById("stopAll");
+  const notasPorCorda = [
+    ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#","E"],
+    ["A","A#","B","C","C#","D","D#","E","F","F#","G","G#","A"],
+    ["D","D#","E","F","F#","G","G#","A","A#","B","C","C#","D"],
+    ["G","G#","A","A#","B","C","C#","D","D#","E","F","F#","G"],
+    ["B","C","C#","D","D#","E","F","F#","G","G#","A","A#","B"],
+    ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#","E"]
+  ];
 
-    // Web Audio API
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    let tocando = new Map();
+  // frequências das cordas soltas: Mi grave -> Mi agudo
+  const freqBase = [82.41,110.00,146.83,196.00,246.94,329.63];
 
-    function freqDaNota(corda, casa) {
-      const base = cordaBaseFreq[corda];
-      return base * Math.pow(2, casa / 12);
+  // acordes (mantive a sua estrutura original)
+  const acordesByCategory = {
+    "Maiores": {
+      A: [{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:2},{corda:5,casa:0}],
+      B: [{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:4},{corda:5,casa:2}],
+      C: [{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:1},{corda:5,casa:0}],
+      D: [{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:2}],
+      E: [{corda:0,casa:0},{corda:1,casa:2},{corda:2,casa:2},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}],
+      F: [{corda:0,casa:1},{corda:1,casa:3},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:1}],
+      G: [{corda:0,casa:3},{corda:1,casa:2},{corda:2,casa:0},{corda:3,casa:0},{corda:4,casa:0},{corda:5,casa:3}],
+      "C#":[{corda:1,casa:4},{corda:2,casa:6},{corda:3,casa:6},{corda:4,casa:6},{corda:5,casa:4}],
+      "D#": [{corda:1,casa:6},{corda:2,casa:5},{corda:3,casa:3},{corda:4,casa:4},{corda:5,casa:3}],
+      "G#":[{corda:0,casa:4},{corda:1,casa:6},{corda:2,casa:6},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:4}],
+      "A#": [{corda:1,casa:1},{corda:2,casa:3},{corda:3,casa:3},{corda:4,casa:3},{corda:5,casa:1}],
+      "F#": [{corda:0,casa:2},{corda:1,casa:4},{corda:2,casa:4},{corda:3,casa:3},{corda:4,casa:2},{corda:5,casa:2}],
+    },
+    "Menores": {
+      "Am":[{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:0}],
+      "Em":[{corda:0,casa:0},{corda:1,casa:2},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:0},{corda:5,casa:0}],
+      "Dm":[{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:1}],
+      "Bm":[{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:3},{corda:5,casa:2}],
+      "Cm":[{corda:1,casa:3},{corda:2,casa:5},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:3}],
+      "C#m":[{corda:1,casa:4},{corda:2,casa:6},{corda:3,casa:6},{corda:4,casa:5},{corda:5,casa:4}],
+      "D#m":[{corda:1,casa:6},{corda:2,casa:8},{corda:3,casa:8},{corda:4,casa:7},{corda:5,casa:6}],
+      "Fm": [{corda:0,casa:1},{corda:1,casa:3},{corda:2,casa:3},{corda:3,casa:1},{corda:4,casa:1},{corda:5,casa:1}],
+      "F#m": [{corda:0,casa:2},{corda:1,casa:4},{corda:2,casa:4},{corda:3,casa:2},{corda:4,casa:2},{corda:5,casa:2}],
+      "Gm": [{corda:0,casa:3},{corda:1,casa:5},{corda:2,casa:5},{corda:3,casa:3},{corda:4,casa:3},{corda:5,casa:3}],
+      "G#m": [{corda:0,casa:4},{corda:1,casa:6},{corda:2,casa:6},{corda:3,casa:4},{corda:4,casa:4},{corda:5,casa:4}],
+      "A#m": [{corda:1,casa:1},{corda:2,casa:3},{corda:3,casa:3},{corda:4,casa:2},{corda:5,casa:1}]
+    },
+    "7ª": {
+      "A7":[{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:2},{corda:5,casa:0}],
+      "B7":[{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:2},{corda:4,casa:4},{corda:5,casa:2}],
+      "C7":[{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:1},{corda:5,casa:0}],
+      "D7":[{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:2}],
+      "E7":[{corda:0,casa:0},{corda:1,casa:2},{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}],
+      "F7":[{corda:0,casa:1},{corda:1,casa:3},{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:1}],
+      "G7":[{corda:0,casa:3},{corda:1,casa:2},{corda:2,casa:0},{corda:3,casa:0},{corda:4,casa:0},{corda:5,casa:1}],
+      "Cm7":[{corda:1,casa:3},{corda:2,casa:5},{corda:3,casa:3},{corda:4,casa:4},{corda:5,casa:3}],
+      "Bm7":[{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:2}],
+     "F#7":[{corda:0,casa:2},{corda:1,casa:4},{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:2},{corda:5,casa:2}],
+     "G#7":[{corda:0,casa:4},{corda:1,casa:6},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:4}],
+     "A#7":[{corda:1,casa:1},{corda:2,casa:3},{corda:3,casa:1},{corda:4,casa:3},{corda:5,casa:1}],
+     "C#7":[{corda:1,casa:4},{corda:2,casa:6},{corda:3,casa:4},{corda:4,casa:6},{corda:5,casa:4}],
+     "D#7":[{corda:1,casa:6},{corda:2,casa:8},{corda:3,casa:6},{corda:4,casa:8},{corda:5,casa:6}],
+      "Am7":[{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:1},{corda:5,casa:0}],
+      "C#m7":[{corda:1,casa:4},{corda:2,casa:6},{corda:3,casa:4},{corda:4,casa:5},{corda:5,casa:4}],
+      "G#m7":[{corda:0,casa:4},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:4},{corda:5,casa:4}],
+      "Gm7":[{corda:0,casa:3},{corda:2,casa:3},{corda:3,casa:3},{corda:4,casa:3},{corda:5,casa:3}],
+      "F#m7":[{corda:0,casa:2},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:2},{corda:5,casa:2}],
+      "Fm7":[{corda:0,casa:1},{corda:2,casa:1},{corda:3,casa:1},{corda:4,casa:1},{corda:5,casa:1}],
+      "A#m7":[{corda:1,casa:1},{corda:2,casa:3},{corda:3,casa:1},{corda:4,casa:2},{corda:5,casa:1}],
+      "Dm7":[{corda:1,casa:5},{corda:3,casa:5},{corda:4,casa:6},{corda:5,casa:5}],
+      "D#m7":[{corda:1,casa:6},{corda:3,casa:6},{corda:4,casa:7},{corda:5,casa:6}],
+      "Em7":[{corda:1,casa:7},{corda:3,casa:7},{corda:4,casa:8},{corda:5,casa:7}]
+    },
+
+    /* Demais categorias mantidas (reduzi comentário) */
+    "7M": {
+      "A7M":[{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:1},{corda:4,casa:2},{corda:5,casa:0}],
+      "C7M":[{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:0},{corda:5,casa:0}],
+      "B7M":[{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:3},{corda:4,casa:4},{corda:5,casa:2}],
+      "D7M":[{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:2},{corda:5,casa:2}],
+      "E7M":[{corda:0,casa:0},{corda:1,casa:2},{corda:2,casa:1},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}],
+      "C#7M":[{corda:1,casa:4},{corda:2,casa:3},{corda:3,casa:1},{corda:4,casa:1},{corda:5,casa:1}],
+      "D#7M":[{corda:2,casa:1},{corda:3,casa:3},{corda:4,casa:3},{corda:5,casa:3}],
+      "A#7M":[{corda:1,casa:1},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:1}],
+      "F7M":[{corda:0,casa:1},{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:1}],
+      "F#7M":[{corda:0,casa:2},{corda:1,casa:4},{corda:2,casa:3},{corda:3,casa:3},{corda:4,casa:2},{corda:5,casa:2}],
+      "G7M":[{corda:0,casa:3},{corda:1,casa:5},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:3},{corda:5,casa:2}],
+      "G#7M":[{corda:0,casa:4},{corda:1,casa:6},{corda:2,casa:5},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:4}],
+      "C#m7M":[{corda:1,casa:4},{corda:2,casa:6},{corda:3,casa:5},{corda:4,casa:5},{corda:5,casa:4}]
+    },
+
+    "Add9": {
+      "Aadd9":[{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:4},{corda:4,casa:2},{corda:5,casa:0}],
+      "Badd9":[{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:6},{corda:4,casa:4},{corda:5,casa:2}],
+      "Cadd9":[{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:3},{corda:5,casa:3}],
+      "Dadd9":[{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:5},{corda:5,casa:2}]
+    },
+
+    "Sus": {
+      "Asus2":[{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:2},{corda:5,casa:0}],
+      "Asus4":[{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:2},{corda:5,casa:3}],
+      "Csus2":[{corda:1,casa:3},{corda:2,casa:0},{corda:3,casa:0},{corda:4,casa:3},{corda:5,casa:3}]
+    },
+
+    "6": {
+      "C6": [{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:0}],
+      "A6": [{corda:0,casa:5},{corda:2,casa:4},{corda:3,casa:6},{corda:4,casa:5}],
+      "G6":[{corda:0,casa:0},{corda:1,casa:0},{corda:2,casa:0},{corda:3,casa:0},{corda:4,casa:2},{corda:5,casa:3}],
+      "D6": [{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:0},{corda:5,casa:2}],
+      "E6": [{corda:0,casa:0},{corda:1,casa:2},{corda:2,casa:2},{corda:3,casa:1},{corda:4,casa:2},{corda:5,casa:0}],
+      "F6": [{corda:0,casa:1},{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:1}],
+      "F#6": [{corda:0,casa:2},{corda:2,casa:1},{corda:3,casa:3},{corda:4,casa:2}],
+      "G6": [{corda:0,casa:3},{corda:2,casa:2},{corda:3,casa:4},{corda:4,casa:3}],
+      "G#6": [{corda:0,casa:4},{corda:2,casa:3},{corda:3,casa:5},{corda:4,casa:4}],
+      "C#6": [{corda:1,casa:4},{corda:2,casa:6},{corda:3,casa:6},{corda:4,casa:6},{corda:5,casa:6}],
+      "D#6": [{corda:1,casa:6},{corda:2,casa:8},{corda:3,casa:8},{corda:4,casa:8},{corda:5,casa:8}],
+      "B6": [{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:4},{corda:5,casa:4}],
+      "A#6": [{corda:1,casa:1},{corda:2,casa:3},{corda:3,casa:3},{corda:4,casa:3},{corda:5,casa:3}],
+      "Cm6": [{corda:1,casa:3},{corda:3,casa:2},{corda:4,casa:4},{corda:5,casa:3}],
+      "Bm6": [{corda:1,casa:2},{corda:3,casa:1},{corda:4,casa:3},{corda:5,casa:2}],
+      "C#m6": [{corda:1,casa:4},{corda:3,casa:3},{corda:4,casa:5},{corda:5,casa:4}],
+      "Dm6": [{corda:1,casa:5},{corda:3,casa:4},{corda:4,casa:6},{corda:5,casa:5}],
+      "D#m6": [{corda:1,casa:6},{corda:3,casa:5},{corda:4,casa:7},{corda:5,casa:6}],
+      "Fm6": [{corda:0,casa:1},{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:1}],
+      "F#m6": [{corda:0,casa:2},{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:2}],
+      "Gm6": [{corda:0,casa:3},{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:3}],
+      "G#m6": [{corda:0,casa:4},{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:4}],
+      "Am6": [{corda:0,casa:5},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:5}],
+      "A#m6": [{corda:0,casa:6},{corda:2,casa:5},{corda:3,casa:6},{corda:4,casa:6}],
+      "Em6": [{corda:1,casa:7},{corda:3,casa:6},{corda:4,casa:8},{corda:5,casa:7}]
+    },
+
+    "Dim": {
+      "Cdim":[{corda:1,casa:3},{corda:2,casa:4},{corda:3,casa:2},{corda:4,casa:4}],
+      "C#dim":[{corda:1,casa:4},{corda:2,casa:5},{corda:3,casa:3},{corda:4,casa:5}],
+      "Ddim":[{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:1}],
+      "D#dim":[{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:2}],
+      "Edim":[{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:2},{corda:5,casa:3}],
+      "Fdim":[{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:3},{corda:5,casa:4}],
+      "F#dim":[{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:5}],
+      "Gdim":[{corda:0,casa:3},{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:2}],
+      "G#dim":[{corda:0,casa:4},{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:3}],
+      "Adim":[{corda:0,casa:5},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:4}],
+      "A#dim":[{corda:1,casa:1},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:2}],
+      "Bdim":[{corda:1,casa:2},{corda:2,casa:3},{corda:3,casa:1},{corda:4,casa:3}]
+    },
+
+    "Aug": {
+      A: [{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:2},{corda:5,casa:0}],
+      B: [{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:4},{corda:5,casa:2}],
+      Caug: [{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:1},{corda:4,casa:1},{corda:5,casa:0}],
+      D: [{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:2}],
+      E: [{corda:0,casa:0},{corda:1,casa:2},{corda:2,casa:2},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}],
+      F: [{corda:0,casa:1},{corda:1,casa:3},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:1}],
+      G: [{corda:0,casa:3},{corda:1,casa:2},{corda:2,casa:0},{corda:3,casa:0},{corda:4,casa:0},{corda:5,casa:3}],
+      "C#":[{corda:1,casa:4},{corda:2,casa:6},{corda:3,casa:6},{corda:4,casa:6},{corda:5,casa:4}],
+      "D#": [{corda:1,casa:6},{corda:2,casa:5},{corda:3,casa:3},{corda:4,casa:4},{corda:5,casa:3}],
+      "G#":[{corda:0,casa:4},{corda:1,casa:6},{corda:2,casa:6},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:4}],
+      "A#": [{corda:1,casa:1},{corda:2,casa:3},{corda:3,casa:3},{corda:4,casa:3},{corda:5,casa:1}],
+      "F#": [{corda:0,casa:2},{corda:1,casa:4},{corda:2,casa:4},{corda:3,casa:3},{corda:4,casa:2},{corda:5,casa:2}]
+    },
+
+    /* outras categorias menores também mantidas... (você pode expandir) */
+    "7(13)": {
+      "F7(13)":[{corda:0,casa:1},{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:3}],
+      "F#7(13)":[{corda:0,casa:2},{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:4}],
+      "G7(13)":[{corda:0,casa:3},{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:5}],
+      "G#7(13)":[{corda:0,casa:4},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:6}],
+      "A7(13)":[{corda:0,casa:5},{corda:2,casa:5},{corda:3,casa:6},{corda:4,casa:7}],
+      "C7(13)":[{corda:1,casa:3},{corda:3,casa:3},{corda:4,casa:5},{corda:5,casa:5}],
+      "E7(13)":[{corda:1,casa:7},{corda:3,casa:7},{corda:4,casa:9},{corda:5,casa:9}],
+      "D7(13)":[{corda:1,casa:5},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:0}],
+    },
+      
+      "7(b13)": {
+      "E7(b13)":[{corda:0,casa:0},{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:1}],
+      "A7(b13)":[{corda:0,casa:5},{corda:2,casa:5},{corda:3,casa:6},{corda:4,casa:6}],
+      },
+      
+      
+      
+      
+      
+      
+
+    "7(9)": {
+      "C7(9)":[{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:3}],
+      "Cm7(9)":[{corda:1,casa:3},{corda:2,casa:1},{corda:3,casa:3},{corda:4,casa:3}],
+      "Dm7(9)":[{corda:1,casa:5},{corda:2,casa:3},{corda:3,casa:5},{corda:4,casa:5}],
+      "D#m7(9)":[{corda:1,casa:6},{corda:2,casa:4},{corda:3,casa:6},{corda:4,casa:6}],
+      "F#7(9)":[{corda:2,casa:4},{corda:3,casa:3},{corda:4,casa:5},{corda:5,casa:4}],
+      "B7(9)":[{corda:1,casa:2},{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:2}],
+      "Am7(9)":[{corda:1,casa:0},{corda:2,casa:5},{corda:3,casa:5},{corda:4,casa:0}],
+     "D7(9)":[{corda:1,casa:5},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:5}],
+    },
+
+    "7M(9)": {
+      "C7M(9)":[{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:4},{corda:4,casa:3}],
+    "C#7M(9)":[{corda:1,casa:4},{corda:2,casa:3},{corda:3,casa:5},{corda:4,casa:4}],
+    "D7M(9)":[{corda:1,casa:5},{corda:2,casa:4},{corda:3,casa:6},{corda:4,casa:5}],
+    "D#7M(9)":[{corda:1,casa:6},{corda:2,casa:5},{corda:3,casa:7},{corda:4,casa:6}],
+    "E7M(9)":[{corda:1,casa:7},{corda:2,casa:6},{corda:3,casa:8},{corda:4,casa:7}],
+     "B7M(9)":[{corda:1,casa:2},{corda:2,casa:1},{corda:3,casa:3},{corda:4,casa:2}],
+      "Cm7M(9)":[{corda:1,casa:3},{corda:2,casa:1},{corda:3,casa:4},{corda:4,casa:3}],
+      "Dm7M(9)":[{corda:1,casa:5},{corda:2,casa:3},{corda:3,casa:6},{corda:4,casa:5}],
+      "D#m7M(9)":[{corda:1,casa:6},{corda:2,casa:4},{corda:3,casa:7},{corda:4,casa:6}]
+    },
+
+    "6(9)": {
+      "C6(9)":[{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:3}],
+      "Cm6(9)":[{corda:1,casa:3},{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:3}],
+      "Dm6(9)":[{corda:1,casa:5},{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:5}],
+      "D#m6(9)":[{corda:1,casa:6},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:6}]
+    },
+
+    "b6(9)": {
+      "Cmb6(9)":[{corda:1,casa:3},{corda:2,casa:1},{corda:3,casa:1},{corda:4,casa:3}],
+      "Dmb6(9)":[{corda:1,casa:5},{corda:2,casa:3},{corda:3,casa:3},{corda:4,casa:5}],
+      "D#mb6(9)":[{corda:1,casa:6},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:6}]
+    },
+
+    "6(b13)": {
+      "A#m6(b13)":[{corda:1,casa:1},{corda:3,casa:0},{corda:4,casa:2},{corda:5,casa:2}]
+    },
+
+    "7(5-)": {
+      "G#m7(5-)":[{corda:0,casa:4},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:3}],
+     "Bm7(5-)":[{corda:1,casa:2},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:3}],
+    "F#m7(5-)":[{corda:0,casa:2},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:1}],
+        
+    },
+      
+      "sus47(9)": {
+      "Gsus47(9)":[{corda:0,casa:3},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:1}]},
+      
+      
+
+    "7(5+)": {
+      "G#7(5+)":[{corda:0,casa:4},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:5}],
+      "C7(5+)":[{corda:1,casa:3},{corda:3,casa:3},{corda:4,casa:5},{corda:5,casa:4}],
+      "C#7(5+)":[{corda:1,casa:4},{corda:3,casa:4},{corda:4,casa:6},{corda:5,casa:5}]
+    },
+
+    "7(b9)": {
+      "C#7(b9)":[{corda:1,casa:4},{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:3}],
+      "E7(b9)":[{corda:1,casa:7},{corda:2,casa:6},{corda:3,casa:7},{corda:4,casa:6}],
+    "B7(b9)":[{corda:1,casa:2},{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:1}],
+     "G7(b9)":[{corda:0,casa:3},{corda:2,casa:3},{corda:3,casa:1},{corda:4,casa:0}],
+    },
+
+    "(/A)": {
+      "G(/A)":[{corda:0,casa:5},{corda:2,casa:5},{corda:3,casa:4},{corda:4,casa:3}],
+      "B(/A)":[{corda:0,casa:5},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:4}]
+    },
+
+    "(/D)": {
+      "E(/D)":[{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}]
+    },
+
+    "(/E)": {
+      "D(/E)":[{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:2}]
+    },
+
+    "(/B)": {
+      "A(/B)":[{corda:1,casa:2},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:2}]
     }
+  };
 
-    function tocarNota(corda, casa, el) {
-      if (tocando.has(el)) {
-        let { osc, gain } = tocando.get(el);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-        osc.stop(audioCtx.currentTime + 0.3);
-        tocando.delete(el);
-        el.classList.remove("playing");
-      } else {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = "sine";
-        osc.frequency.value = freqDaNota(corda, casa);
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        osc.start();
-        tocando.set(el, { osc, gain });
-        el.classList.add("playing");
+  const chromatic = ["C","C#","D","D#","E","F","F#","G","G#","A","A#","B"];
+
+  /************************************************************************
+   * CRIAÇÃO DO FRETBOARD (grid) - apresenta os textos das notas
+   ************************************************************************/
+  const fretboard = document.getElementById('fretboard');
+  const noteEls = Array.from({length: cordas}, () => Array(trastes).fill(null));
+
+  for (let s = 0; s < cordas; s++){
+    for (let f = 0; f < trastes; f++){
+      const el = document.createElement('div');
+      el.className = 'cell';
+      el.dataset.string = s;
+      el.dataset.fret = f;
+      const nota = notasPorCorda[s][f] || '';
+      el.textContent = nota;
+      el.style.gridColumnStart = (s + 1);
+      el.style.gridRowStart = (f + 1);
+      // clique toca a nota (sem atraso)
+      el.addEventListener('click', () => tocarNota(s, f, el, 0));
+      fretboard.appendChild(el);
+      noteEls[s][f] = el;
+    }
+  }
+
+  /************************************************************************
+   * ÁUDIO (Web Audio API) - som realista + dedilhado
+   ************************************************************************/
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  const activeNodes = [];
+
+  /**
+   * Toca uma nota individual com controle de tempo (delay em segundos).
+   * delay em segundos (permite dedilhado ao tocar acordes).
+   */
+  function tocarNota(stringIndex, fret, el, delay = 1){
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (stringIndex < 0 || stringIndex >= freqBase.length) return;
+    if (fret < 0 || fret >= trastes) return;
+
+    const base = freqBase[stringIndex];
+    const freq = base * Math.pow(2, fret / 12);
+
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    // timbre mais próximo de violão; triangle é melhor que sine para presença harmônica
+    osc.type = "sine";
+
+    // Conexões
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    const now = audioCtx.currentTime;
+    const startTime = now + Math.max(0, delay);
+    const duracao = 2.2; // segundos
+    const ataque = 0.015;
+    const sustainLevel = 0.42;
+
+    // Envelope: suave (evitar clicks)
+    gain.gain.setValueAtTime(0.0001, startTime - 0.01);
+    gain.gain.linearRampToValueAtTime(sustainLevel, startTime + ataque);
+    gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duracao);
+
+    osc.frequency.setValueAtTime(freq, startTime);
+    osc.start(startTime);
+    osc.stop(startTime + duracao + 0.04);
+
+    activeNodes.push({osc, gain});
+
+    // highlights visuais: se o delay for >0, adiciona highlight no momento do start
+    const highlightDelayMs = Math.max(0, delay) * 1000;
+    setTimeout(()=> {
+      if (el) el.classList.add('playing');
+      setTimeout(()=> { if (el) el.classList.remove('playing'); }, 300);
+    }, highlightDelayMs);
+
+    // limpa activeNodes após parar
+    setTimeout(()=> {
+      const idx = activeNodes.findIndex(n => n.osc === osc);
+      if (idx !== -1) activeNodes.splice(idx,1);
+    }, (delay + duracao + 0.2) * 1000);
+  }
+
+  function pararTodos() {
+    activeNodes.forEach(n => {
+      try {
+        n.gain.gain.cancelScheduledValues(audioCtx.currentTime);
+        n.gain.gain.setValueAtTime(n.gain.gain.value || 0.0001, audioCtx.currentTime);
+        n.gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.05);
+        if (n.osc) {
+          try { n.osc.stop(audioCtx.currentTime + 0.06); } catch(e) {}
+        }
+      } catch(e){}
+    });
+    activeNodes.length = 0;
+    for(let s=0;s<cordas;s++) for(let f=0;f<trastes;f++) {
+      const el = noteEls[s][f];
+      if (el) el.classList.remove('playing');
+    }
+  }
+
+  /************************************************************************
+   * mostrar / tocar acordes (usa acordesByCategory)
+   * tocarAcorde agora usa dedilhado: pequena separação entre cada nota
+   ************************************************************************/
+  function limparAcordeClasses(){
+    for(let s=0;s<cordas;s++) for(let f=0;f<trastes;f++) {
+      const el = noteEls[s][f];
+      if (el) el.classList.remove('acorde');
+    }
+  }
+
+  function mostrarAcorde(nome){
+    limparAcordeClasses();
+    if (!nome) return;
+    for (const cat in acordesByCategory) {
+      const group = acordesByCategory[cat];
+      if (group && group[nome]) {
+        const a = group[nome];
+        a.forEach(p => {
+          if (p.corda < 0 || p.corda >= cordas) return;
+          if (p.casa < 0 || p.casa >= trastes) return;
+          const el = noteEls[p.corda][p.casa];
+          if (el) el.classList.add('acorde');
+        });
+        return;
       }
     }
+  }
 
-    // Montar o braço
-    for (let corda = 0; corda < 6; corda++) {
-      for (let casa = 0; casa <= 12; casa++) {
-        const cell = document.createElement("div");
-        cell.classList.add("cell");
+  function tocarAcorde(nome){
+    for (const cat in acordesByCategory) {
+      const group = acordesByCategory[cat];
+      if (group && group[nome]) {
+        const a = group[nome];
 
-        const note = document.createElement("div");
-        note.classList.add("note");
-        note.innerText = notas[corda][casa];
-        note.addEventListener("click", () => tocarNota(corda, casa, note));
+        // ordena as notas por corda (opcional), e faz dedilhado do grave para agudo
+        const notasOrdenadas = a.slice().sort((x,y) => x.corda - y.corda);
 
-        cell.appendChild(note);
-        fretboard.appendChild(cell);
+        // delay entre cordas (em segundos) para simular dedilhado
+        const delayEntreCordas = 0.10; // 60ms - ajuste para mais/menos naturalidade
+        notasOrdenadas.forEach((p, i) => {
+          const delay = i * delayEntreCordas;
+          if (p.corda < 0 || p.corda >= cordas) return;
+          if (p.casa < 0 || p.casa >= trastes) return;
+          const el = noteEls[p.corda][p.casa];
+          if (el) tocarNota(p.corda, p.casa, el, delay);
+        });
+        return;
       }
     }
+  }
 
-    // Botão "Parar Tudo"
-    stopAllBtn.addEventListener("click", () => {
-      tocando.forEach(({osc, gain}, el) => {
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-        osc.stop(audioCtx.currentTime + 0.3);
-        el.classList.remove("playing");
+  /************************************************************************
+   * NOVA UI: selects dinâmicos (nota / tipo / extensão)
+   ************************************************************************/
+  const selectNota = document.getElementById('selectNota');
+  const selectTipo = document.getElementById('selectTipo');
+  const selectExt  = document.getElementById('selectExt');
+  const selectExt02  = document.getElementById('selectExt02');
+  const selectExt03  = document.getElementById('selectExt03');
+
+  const selectedChordName = document.getElementById('selectedChordName');
+
+  let ultimoAcordeSelecionado = null;
+
+  // mapear tipo principal para sufixo textual
+  const tipoToSuffix = {
+    "maior": "",
+    "menor": "m",
+    "dim": "dim",
+    "aug": "aug",
+    "sus2":"sus2",
+    "sus4":"sus4"
+  };
+
+  // atualiza a UI (nome exibido e mostra acorde no braço)
+  function atualizarAcorde() {
+    const nota = selectNota.value;
+    const tipo = selectTipo.value;
+    const ext1 = selectExt.value;
+    const ext2 = selectExt02.value;
+    const ext3 = selectExt03.value;
+
+    let acorde = nota + tipoToSuffix[tipo];
+
+    if (ext1 !== "none") acorde += ext1;
+    if (ext2 !== "none") acorde += `(${ext2})`;
+    if (ext3 !== "none") acorde += `(${ext3})`;
+
+    selectedChordName.textContent = acorde;
+
+    mostrarAcorde(acorde);
+    ultimoAcordeSelecionado = acorde;
+  }
+
+  // eventos: atualizar automaticamente ao mudar selects
+  selectNota.addEventListener("change", atualizarAcorde);
+  selectTipo.addEventListener("change", atualizarAcorde);
+  selectExt.addEventListener("change", atualizarAcorde);
+  selectExt02.addEventListener("change", atualizarAcorde);
+  selectExt03.addEventListener("change", atualizarAcorde);
+
+  /************************************************************************
+   * BOTÕES: tocar e parar
+   ************************************************************************/
+  document.getElementById('btnTocar').addEventListener('click', () => {
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (!ultimoAcordeSelecionado) return;
+    tocarAcorde(ultimoAcordeSelecionado);
+  });
+
+  document.getElementById('btnParar').addEventListener('click', () => {
+    pararTodos();
+  });
+
+  // iniciar com seleção padrão e mostrar acorde
+  window.addEventListener('load', () => {
+    // defaults já no HTML: C / maior / none -> exibe C
+    atualizarAcorde();
+  });
+
+  /************************************************************************
+   * Favoritos (localStorage)
+   ************************************************************************/
+  const LS_KEY = 'guitar_favorites';
+  const btnSalvarFav = document.getElementById('btnSalvarFav');
+  const btnLimparFavs = document.getElementById('btnLimparFavs');
+  const favoritesListEl = document.getElementById('favoritesList');
+  const favStatus = document.getElementById('favStatus');
+
+  let favoritos = loadFavorites(); // array de strings (nomes de acordes)
+  renderFavorites();
+
+  function loadFavorites(){
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr;
+    } catch(e) {
+      console.warn('Erro ao ler favoritos:', e);
+      return [];
+    }
+  }
+
+  function saveFavorites(){
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify(favoritos));
+    } catch(e){
+      console.warn('Erro ao salvar favoritos:', e);
+    }
+  }
+
+  function addFavorite(acordeNome){
+    if (!acordeNome || acordeNome === '—') return;
+    if (favoritos.includes(acordeNome)){
+      showStatus('Já está nos favoritos');
+      return;
+    }
+    favoritos.unshift(acordeNome); // adiciona no topo
+    if (favoritos.length > 40) favoritos.pop(); // limitar (opcional)
+    saveFavorites();
+    renderFavorites();
+    showStatus('Favorito salvo ✔');
+  }
+
+  function removeFavorite(i){
+    if (typeof i === 'number') {
+      favoritos.splice(i, 1);
+    } else {
+      const idx = favoritos.indexOf(i);
+      if (idx !== -1) favoritos.splice(idx, 1);
+    }
+    saveFavorites();
+    renderFavorites();
+    showStatus('Removido');
+  }
+
+  function clearFavorites(){
+    if (!confirm('Limpar todos os favoritos?')) return;
+    favoritos = [];
+    saveFavorites();
+    renderFavorites();
+    showStatus('Favoritos limpos');
+  }
+
+  function renderFavorites(){
+    favoritesListEl.innerHTML = '';
+    if (!favoritos.length){
+      const empty = document.createElement('div');
+      empty.textContent = 'Nenhum favorito ainda';
+      empty.style.opacity = 0.8;
+      favoritesListEl.appendChild(empty);
+      return;
+    }
+
+    favoritos.forEach((nome, idx) => {
+      const chip = document.createElement('div');
+      chip.className = 'fav-chip';
+      chip.title = `Mostrar e tocar ${nome}`;
+      chip.tabIndex = 0;
+
+      const span = document.createElement('span');
+      span.textContent = nome;
+      span.style.userSelect = 'none';
+
+      // clicar no nome -> mostra e toca o acorde
+      span.addEventListener('click', (e) => {
+        selectedChordName.textContent = nome;
+        ultimoAcordeSelecionado = nome;
+        mostrarAcorde(nome);
+        tocarAcorde(nome);
       });
-      tocando.clear();
-    });
 
-    // Marcadores das casas (5, 7 e 12)
-    [5, 7, 12].forEach(fret => {
-      const marker = document.createElement("div");
-      marker.classList.add("marker");
-      const pos = (fret + 0.5) * (100 / 13);
-      marker.style.right = `${pos}%`;
-      fretboard.appendChild(marker);
+      chip.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          span.click();
+        }
+      });
+
+      const rem = document.createElement('button');
+      rem.className = 'remove';
+      rem.title = 'Remover favorito';
+      rem.textContent = '✕';
+      rem.addEventListener('click', (ev) => {
+        ev.stopPropagation();
+        removeFavorite(idx);
+      });
+
+      chip.appendChild(span);
+      chip.appendChild(rem);
+      favoritesListEl.appendChild(chip);
     });
+  }
+
+  let statusTimeout = null;
+  function showStatus(txt, ms = 2000){
+    favStatus.textContent = txt;
+    if (statusTimeout) clearTimeout(statusTimeout);
+    statusTimeout = setTimeout(()=> { favStatus.textContent = ''; }, ms);
+  }
+
+  btnSalvarFav.addEventListener('click', () => {
+    const nome = (ultimoAcordeSelecionado || selectedChordName.textContent || '').trim();
+    if (!nome || nome === '—') {
+      showStatus('Nenhum acorde selecionado');
+      return;
+    }
+    addFavorite(nome);
+  });
+
+  btnLimparFavs.addEventListener('click', () => {
+    clearFavorites();
+  });
+
+  /************************************************************************
+   * Fim do script
+   ************************************************************************/
   </script>
 </body>
 </html>
