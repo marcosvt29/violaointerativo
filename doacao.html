@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Apoie o Acordes no Ponto</title>
+  <meta name="description" content="Apoie o projeto Acordes no Ponto e ajude a manter o site vivo! Com R$10 você libera todos os acordes.">
+  <meta property="og:title" content="Apoie o Acordes no Ponto">
+  <meta property="og:description" content="Ajude o projeto e ganhe acesso completo.">
+  <meta property="og:type" content="website">
+
+  <style>
+    :root {
+      --cor-fundo: #F2E5CF;
+      --cor-texto: #4a2c1a;
+      --cor-principal: #A45828;
+      --cor-principal-hover: #c16a35;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--cor-fundo);
+      color: var(--cor-texto);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    header {
+      background: var(--cor-principal);
+      color: #fff;
+      width: 100%;
+      text-align: center;
+      padding: 20px 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+      text-align: center;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    main h2 {
+      color: var(--cor-principal);
+      font-size: 1.8rem;
+      margin-bottom: 16px;
+    }
+
+    main p {
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 32px;
+    }
+
+    .video-apresentacao {
+      width: 100%;
+      max-width: 400px;
+      border-radius: 15px;
+      margin-bottom: 25px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .donation-options {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      max-width: 350px;
+    }
+
+    .donation-btn {
+      flex: 1;
+      min-width: 100px;
+      background: linear-gradient(90deg, var(--cor-principal), var(--cor-principal-hover));
+      color: #fff;
+      border: none;
+      border-radius: 15px;
+      padding: 10px 0;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-decoration: none;
+      text-align: center;
+    }
+
+    .donation-btn:hover {
+      background: linear-gradient(90deg, var(--cor-principal-hover), var(--cor-principal));
+      transform: scale(1.05);
+    }
+
+      
+      .confirmacao {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid #d9b896;
+  border-radius: 10px;
+  padding: 12px 16px;
+  font-size: 0.95rem;
+  color: var(--cor-texto);
+  max-width: 400px;
+  text-align: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+            
+    .pix {
+      margin-top: 25px;
+      font-size: 0.95rem;
+      color: var(--cor-texto);
+    }
+
+    footer {
+      width: 100%;
+      text-align: center;
+      font-size: 14px;
+      color: #555;
+      padding: 20px 10px;
+      background: #fff;
+    }
+
+    footer a {
+      color: #555;
+      text-decoration: none;
+      margin: 0 6px;
+    }
+
+    footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsividade */
+    @media (max-width: 600px) {
+      header {
+        font-size: 1.3rem;
+      }
+      main h2 {
+        font-size: 1.4rem;
+      }
+      .donation-options {
+        flex-direction: column;
+        align-items: center;
+      }
+      .donation-btn {
+        width: 50%;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    Apoie o Acordes no Ponto
+  </header>
+
+  <main>
+    <h2>Ajude a manter o projeto vivo 🎸</h2>
+    <p>
+      O <strong>Acordes no Ponto</strong> é um projeto independente feito com dedicação para músicos e estudantes.
+      Apoie o projeto e libere todos os acordes!
+      Com apenas R$10, você ajuda a manter o site no ar e ganha acesso completo.
+    </p>
+
+    <!-- Vídeo centralizado -->
+    <video class="video-apresentacao" autoplay muted loop playsinline>
+      <source src="video.mp4" type="video/mp4">
+      Seu navegador não suporta vídeos HTML5.
+    </video>
+
+    <!-- Botão de apoio -->
+    <div class="donation-options">
+      <a href="https://www.paypal.com/donate?hosted_button_id=XXXXXX" target="_blank" class="donation-btn" aria-label="Fazer doação de R$10 pelo PayPal">
+        💰 Apoiar com R$10
+      </a>
+    </div>
+
+    
+       <div class="confirmacao">
+  🔒 Após a confirmação do pagamento de R$10, você receberá uma senha exclusiva
+  para liberar todos os acordes no site.
+</div>
+      
+      
+        
+      
+      
+      <!-- Pix opcional -->
+    <div class="pix">
+      Qualquer dúvida:<br>
+      <strong>chavepix@email.com</strong>
+    </div>
+      
+      
+     
+ 
+      
+  </main>
+
+  <footer>
+    © 2025 <strong>Acordes no Ponto</strong> — Todos os direitos reservados.<br/>
+    <a href="index.html">Voltar ao início</a> |
+    <a href="politica-privacidade.html">Política de Privacidade</a> |
+    <a href="termos-de-uso.html">Termos de Uso</a>
+  </footer>
+
+</body>
+</html>

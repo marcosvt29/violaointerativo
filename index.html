@@ -63,13 +63,6 @@
     }
       
       
-            
-      
-      
-      
-      
-      
-      
       
    :root {
   --trastes: 13; /* mostrado até 12 (0..12) — você pode ajustar */
@@ -85,29 +78,38 @@ body {
   margin: 0;
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   background: #F2E5CF;
   color: #A45828;
   font-family: Arial, Helvetica, sans-serif;
-  padding: 40px 20px;
+  padding: 20px 15px;
 }
 
 .wrap {
-  width: min(1100px, 96vw);
-  text-align: center;
+  width: 100%;
+  
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 20px;
+  justify-content: flex-start;
+  
 }
+      .board-wrap {
+          display: block;
+          margin: 0 auto;
+          text-align: center;
+          
+                 
+      }
 
-h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
+h1 { margin: 0; font-size: 1.2rem; color:#7a4318; }
 
 .controls-row {
   width: 100%;
   display:flex;
-  gap:12px;
+  gap:10px;
   align-items: center;
   justify-content: center;
   flex-wrap:wrap;
@@ -116,7 +118,7 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
 /* selects area (ajustado visual) */
 .controls-row label { font-weight:700; color:#6b3e20; }
 .controls-row select, .controls-row button {
-  padding: 8px 10px;
+  padding: 6px 10px;
   border-radius: 8px;
   border: none;
   font-size: 14px;
@@ -131,11 +133,11 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
 /* destaque do nome do acorde */
 #selectedChordName {
   font-weight: 800;
-  font-size: 1.1rem;
-  color: #7a4318;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: #fff2df;
+  font-size: 1.3rem;
+  color: #000;
+  padding: 10px 18px;
+  border-radius: 30px;
+  background: #fff;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
 }
 
@@ -174,7 +176,7 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
   align-content: center;
   background: #DBCDA4;
   border-radius: 10px;
-  padding: 10px;
+  padding: 5px;
   box-sizing: border-box;
 }
 
@@ -185,7 +187,7 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 11px;
   color: #eee;
   cursor: pointer;
   transition: transform .12s, background .12s, box-shadow .12s;
@@ -226,6 +228,56 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
 .fav-chip .remove {
   color: #b33;
 }
+      
+      
+      /* Botão TOCAR ACORDE (PLAY) */
+#btnTocar {
+  background: limegreen;
+  color: white;
+  font-weight: bold;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 8px;
+  padding: 5px 15px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  box-shadow: 0 0 5px limegreen;
+  display: inline-block;
+}
+
+#btnTocar:hover {
+  background: #00ff00;
+  box-shadow: 0 0 10px #00ff00;
+  transform: scale(1.05);
+}
+
+      
+      .logo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.logo {
+  height: 80px;   /* ajuste o tamanho da logo */
+  width: auto;
+  filter: drop-shadow(0 0 0px rgba(0,0,0,0.0)); /* efeito sutil */
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+      
+      
+      
+      
+      
+      
 
 /* responsividade */
 @media (max-width: 900px) {
@@ -237,13 +289,42 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
   .wrap { gap: 20px; }
   select, button { font-size: 13px; padding: 8px; }
 }
+      
+         
+/* força o rodapé a ficar abaixo de tudo */
+footer {
+  width: 100%;
+  text-align: center;
+  margin-top: 40px;
+  padding: 20px 0;
+  font-size: 14px;
+  color: #444;
+  display: block;
+  clear: both;      /* força quebra de linha após blocos flutuantes */
+}
+
+footer a {
+  color: #444;
+  text-decoration: none;
+  margin: 0 8px;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+
+ 
+      
   </style>
+    
+    
 </head>
 <body>
    
   <!-- Botão de Doação Flutuante Mobile-Friendly -->
   <div id="paypal-donate-mobile">
-    <a href="https://www.paypal.com/donate?hosted_button_id=SEU_ID_AQUI" target="_blank">
+    <a href="doacao.html" target="_blank">
       💖<span> Doar</span>
     </a>
   </div>
@@ -252,7 +333,13 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
         
     
   <div class="wrap">
-    <h1>🎸 Visualizador de Acordes</h1>
+    
+      <div class="logo-container">
+  <img src="02logoarcorde.png" alt="Logo Acordes no Ponto" class="logo">
+</div>
+
+      
+          
 
     <!-- container de selects (nota / tipo / extensão) -->
     <div class="controls-row" id="controlsRow">
@@ -276,7 +363,7 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
       <select id="selectTipo" aria-label="Tipo principal do acorde">
         <option value="maior">Maior</option>
         <option value="menor">Menor</option>
-        <option value="dim">Dim</option>
+        <option value="dim7">Dim7</option>
         <option value="aug">Aug</option>
         <option value="sus2">sus2</option>
         <option value="sus4">sus4</option>
@@ -301,20 +388,25 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
         <option value="b9">(b9)</option>
         <option value="9#">(9#)</option>
         <option value="11">(11)</option>
+        <option value="#11">(#11)</option>
         <option value="13">(13)</option>
         <option value="b13">(b13)</option>
+        <option value="sus2">(sus2)</option>
+        <option value="sus4">(sus4)</option>
       </select>
 
       <label for="selectExt03"></label>
       <select id="selectExt03" aria-label="Extensão do acorde03">
         <option value="none">Nenhuma</option>
         <option value="/C">/C</option>
+        <option value="/C#">/C#</option>
         <option value="/D">/D</option>
         <option value="/E">/E</option>
         <option value="/F">/F</option>
         <option value="/G">/G</option>
         <option value="/B">/B</option>
         <option value="/A">/A</option>
+        <option value="/A#">/A#</option>
       </select>
 
       <!-- nome do acorde exibido automaticamente -->
@@ -322,7 +414,7 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
     </div>
 
     <div class="controls-row" style="margin-top:6px;">
-      <button id="btnTocar" class="primary">Tocar acorde</button>
+      <button id="btnTocar" class="primary">Play</button>
       <button id="btnParar" class="secondary">Parar</button>
     </div>
 
@@ -343,6 +435,9 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
     </div>
 
   </div>
+    
+        
+    
 
   <script>
   /************************************************************************
@@ -353,12 +448,12 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
   const cordas = 6;
 
   const notasPorCorda = [
-    ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#","E"],
-    ["A","A#","B","C","C#","D","D#","E","F","F#","G","G#","A"],
-    ["D","D#","E","F","F#","G","G#","A","A#","B","C","C#","D"],
-    ["G","G#","A","A#","B","C","C#","D","D#","E","F","F#","G"],
-    ["B","C","C#","D","D#","E","F","F#","G","G#","A","A#","B"],
-    ["E","F","F#","G","G#","A","A#","B","C","C#","D","D#","E"]
+    ["E","F","F# / Gb","G","G# / Ab","A","A# / Bb","B","C","C# / Db","D","D# / Eb","E"],
+    ["A","A# / Bb","B","C","C# / Db","D","D# / Eb","E","F","F# / Gb","G","G# / Ab","A"],
+    ["D","D# / Eb","E","F","F# / Gb","G","G# / Ab","A","A# / Bb","B","C","C# / Db","D"],
+    ["G","G# / Ab","A","A# / Bb","B","C","C# / Db","D","D# / Eb","E","F","F# / Gb","G"],
+    ["B","C","C# / Db","D","D# / Eb","E","F","F# / Gb","G","G# / Ab","A","A# / Bb","B"],
+    ["E","F","F# / Gb","G","G# / Ab","A","A# / Bb","B","C","C# / Db","D","D# / Eb","E"]
   ];
 
   // frequências das cordas soltas: Mi grave -> Mi agudo
@@ -442,7 +537,17 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
       "Aadd9":[{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:4},{corda:4,casa:2},{corda:5,casa:0}],
       "Badd9":[{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:6},{corda:4,casa:4},{corda:5,casa:2}],
       "Cadd9":[{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:3},{corda:5,casa:3}],
-      "Dadd9":[{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:5},{corda:5,casa:2}]
+    "C#add9":[{corda:1,casa:4},{corda:2,casa:6},{corda:3,casa:8},{corda:4,casa:6},{corda:5,casa:4}],
+      "Dadd9":[{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:5},{corda:5,casa:2}],
+     "D#add9":[{corda:2,casa:1},{corda:3,casa:3},{corda:4,casa:6},{corda:5,casa:3}],
+    "Eadd9": [{corda:0,casa:0},{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}],
+    "Fadd9": [{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:3}],
+    "F#add9": [{corda:2,casa:4},{corda:3,casa:3},{corda:4,casa:2},{corda:5,casa:4}],
+    "Gadd9":[{corda:0,casa:3},{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:0},{corda:5,casa:3}],
+    "G#add9": [{corda:2,casa:6},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:6}],
+    "A#add9": [{corda:1,casa:1},{corda:2,casa:3},{corda:3,casa:3},{corda:4,casa:1},{corda:5,casa:1}],
+        
+               
     },
 
     "Sus": {
@@ -479,29 +584,29 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
       "Em6": [{corda:1,casa:7},{corda:3,casa:6},{corda:4,casa:8},{corda:5,casa:7}]
     },
 
-    "Dim": {
-      "Cdim":[{corda:1,casa:3},{corda:2,casa:4},{corda:3,casa:2},{corda:4,casa:4}],
-      "C#dim":[{corda:1,casa:4},{corda:2,casa:5},{corda:3,casa:3},{corda:4,casa:5}],
-      "Ddim":[{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:1}],
-      "D#dim":[{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:2}],
-      "Edim":[{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:2},{corda:5,casa:3}],
-      "Fdim":[{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:3},{corda:5,casa:4}],
-      "F#dim":[{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:5}],
-      "Gdim":[{corda:0,casa:3},{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:2}],
-      "G#dim":[{corda:0,casa:4},{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:3}],
-      "Adim":[{corda:0,casa:5},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:4}],
-      "A#dim":[{corda:1,casa:1},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:2}],
-      "Bdim":[{corda:1,casa:2},{corda:2,casa:3},{corda:3,casa:1},{corda:4,casa:3}]
+    "Dim7": {
+      "Cdim7":[{corda:1,casa:3},{corda:2,casa:4},{corda:3,casa:2},{corda:4,casa:4}],
+      "C#dim7":[{corda:1,casa:4},{corda:2,casa:5},{corda:3,casa:3},{corda:4,casa:5}],
+      "Ddim7":[{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:1}],
+      "D#dim7":[{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:2}],
+      "Edim7":[{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:2},{corda:5,casa:3}],
+      "Fdim7":[{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:3},{corda:5,casa:4}],
+      "F#dim7":[{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:5}],
+      "Gdim7":[{corda:0,casa:3},{corda:2,casa:2},{corda:3,casa:3},{corda:4,casa:2}],
+      "G#dim7":[{corda:0,casa:4},{corda:2,casa:3},{corda:3,casa:4},{corda:4,casa:3}],
+      "Adim7":[{corda:0,casa:5},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:4}],
+      "A#dim7":[{corda:1,casa:1},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:2}],
+      "Bdim7":[{corda:1,casa:2},{corda:2,casa:3},{corda:3,casa:1},{corda:4,casa:3}]
     },
 
     "Aug": {
-      A: [{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:2},{corda:5,casa:0}],
-      B: [{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:4},{corda:5,casa:2}],
+      Aaug: [{corda:1,casa:0},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:2}],
+      Baug: [{corda:1,casa:2},{corda:2,casa:5},{corda:3,casa:4},{corda:4,casa:4}],
       Caug: [{corda:1,casa:3},{corda:2,casa:2},{corda:3,casa:1},{corda:4,casa:1},{corda:5,casa:0}],
-      D: [{corda:2,casa:0},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:2}],
-      E: [{corda:0,casa:0},{corda:1,casa:2},{corda:2,casa:2},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}],
-      F: [{corda:0,casa:1},{corda:1,casa:3},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:1}],
-      G: [{corda:0,casa:3},{corda:1,casa:2},{corda:2,casa:0},{corda:3,casa:0},{corda:4,casa:0},{corda:5,casa:3}],
+      Daug: [{corda:2,casa:0},{corda:3,casa:3},{corda:4,casa:3},{corda:5,casa:2}],
+      Eaug: [{corda:0,casa:0},{corda:2,casa:2},{corda:3,casa:1},{corda:4,casa:1},{corda:5,casa:0}],
+      Faug: [{corda:0,casa:1},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:2},{corda:5,casa:1}],
+      Gaug: [{corda:0,casa:3},{corda:1,casa:2},{corda:2,casa:1},{corda:3,casa:0},{corda:4,casa:0},{corda:5,casa:3}],
       "C#":[{corda:1,casa:4},{corda:2,casa:6},{corda:3,casa:6},{corda:4,casa:6},{corda:5,casa:4}],
       "D#": [{corda:1,casa:6},{corda:2,casa:5},{corda:3,casa:3},{corda:4,casa:4},{corda:5,casa:3}],
       "G#":[{corda:0,casa:4},{corda:1,casa:6},{corda:2,casa:6},{corda:3,casa:5},{corda:4,casa:4},{corda:5,casa:4}],
@@ -526,9 +631,16 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
       "A7(b13)":[{corda:0,casa:5},{corda:2,casa:5},{corda:3,casa:6},{corda:4,casa:6}],
       },
       
+      "7(11)": {
+      "Bm7(11)":[{corda:1,casa:2},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:0}],
       
+        },
       
+      "7(#11)": {
+      "G#7(#11)":[{corda:0,casa:4},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:3}]
       
+        },
+    
       
       
 
@@ -541,6 +653,8 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
       "B7(9)":[{corda:1,casa:2},{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:2}],
       "Am7(9)":[{corda:1,casa:0},{corda:2,casa:5},{corda:3,casa:5},{corda:4,casa:0}],
      "D7(9)":[{corda:1,casa:5},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:5}],
+    "Em7(9)":[{corda:1,casa:7},{corda:2,casa:5},{corda:3,casa:7},{corda:4,casa:7}],
+     "A#7(9)":[{corda:1,casa:1},{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:1}],
     },
 
     "7M(9)": {
@@ -576,18 +690,33 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
       "G#m7(5-)":[{corda:0,casa:4},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:3}],
      "Bm7(5-)":[{corda:1,casa:2},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:3}],
     "F#m7(5-)":[{corda:0,casa:2},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:1}],
+    "Am7(5-)":[{corda:0,casa:5},{corda:2,casa:5},{corda:3,casa:5},{corda:4,casa:4}],
         
     },
       
       "sus47(9)": {
-      "Gsus47(9)":[{corda:0,casa:3},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:1}]},
+      "Gsus47(9)":[{corda:0,casa:3},{corda:2,casa:3},{corda:3,casa:2},{corda:4,casa:1}]
+      
+            
+      },
+      
+      "sus47": {
+      "Asus47":[{corda:1,casa:0},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:3},{corda:5,casa:0}]
+      
+            
+      },
+      
       
       
 
     "7(5+)": {
       "G#7(5+)":[{corda:0,casa:4},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:5}],
       "C7(5+)":[{corda:1,casa:3},{corda:3,casa:3},{corda:4,casa:5},{corda:5,casa:4}],
-      "C#7(5+)":[{corda:1,casa:4},{corda:3,casa:4},{corda:4,casa:6},{corda:5,casa:5}]
+      "C#7(5+)":[{corda:1,casa:4},{corda:3,casa:4},{corda:4,casa:6},{corda:5,casa:5}],
+    "E7(5+)":[{corda:0,casa:0},{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:1}],
+    "A7(5+)":[{corda:0,casa:5},{corda:2,casa:5},{corda:3,casa:6},{corda:4,casa:6}]
+        
+        
     },
 
     "7(b9)": {
@@ -595,23 +724,69 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
       "E7(b9)":[{corda:1,casa:7},{corda:2,casa:6},{corda:3,casa:7},{corda:4,casa:6}],
     "B7(b9)":[{corda:1,casa:2},{corda:2,casa:1},{corda:3,casa:2},{corda:4,casa:1}],
      "G7(b9)":[{corda:0,casa:3},{corda:2,casa:3},{corda:3,casa:1},{corda:4,casa:0}],
+        "D7(b9)":[{corda:1,casa:5},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:4}],
     },
+      
+      "7(9#)":{
+      
+      "D7(9#)":[{corda:1,casa:5},{corda:2,casa:4},{corda:3,casa:5},{corda:4,casa:6}]
+      },
+      
+      
+      
+      
 
     "(/A)": {
       "G(/A)":[{corda:0,casa:5},{corda:2,casa:5},{corda:3,casa:4},{corda:4,casa:3}],
       "B(/A)":[{corda:0,casa:5},{corda:2,casa:4},{corda:3,casa:4},{corda:4,casa:4}]
     },
+      
+      "(/A#)": {
+     "D#m(/A#)":[{corda:0,casa:6},{corda:2,casa:8},{corda:3,casa:8},{corda:4,casa:7}],
+    "Cm(/A#)":[{corda:1,casa:1},{corda:2,casa:1},{corda:3,casa:0},{corda:4,casa:1}],
+          
+          
+      
+    },
+      
+      "(/C)": {
+     "Dm(/C)":[{corda:1,casa:3},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:1}],   
+    "Am6(/C)":[{corda:1,casa:3},{corda:2,casa:4},{corda:3,casa:2},{corda:4,casa:1},{corda:5,casa:0}],
+          
+          
+    },
+      
+       "(/C#)": {
+     "A(/C#)":[{corda:1,casa:4},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:2}],
+      "A7(/C#)":[{corda:1,casa:4},{corda:2,casa:2},{corda:3,casa:0},{corda:4,casa:2}],
+          
+          
+    },
+      
+      
+      
+      
 
     "(/D)": {
-      "E(/D)":[{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}]
+      "E(/D)":[{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}],
+        "E7(/D)":[{corda:2,casa:0},{corda:3,casa:1},{corda:4,casa:0},{corda:5,casa:0}]
     },
 
     "(/E)": {
       "D(/E)":[{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:3},{corda:5,casa:2}]
     },
 
+     "(/F)": {
+      "Gm(/F)":[{corda:0,casa:1},{corda:2,casa:3},{corda:3,casa:3},{corda:4,casa:3}]
+    }, 
+      
+      
     "(/B)": {
-      "A(/B)":[{corda:1,casa:2},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:2}]
+      "A(/B)":[{corda:1,casa:2},{corda:2,casa:2},{corda:3,casa:2},{corda:4,casa:2}],
+        
+        "F#(/B)":[{corda:1,casa:2},{corda:2,casa:4},{corda:3,casa:3},{corda:4,casa:2}],
+        
+      "C#(/B)":[{corda:0,casa:7},{corda:2,casa:6},{corda:3,casa:6},{corda:4,casa:6}],
     }
   };
 
@@ -786,7 +961,7 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
   const tipoToSuffix = {
     "maior": "",
     "menor": "m",
-    "dim": "dim",
+    "dim7": "dim7",
     "aug": "aug",
     "sus2":"sus2",
     "sus4":"sus4"
@@ -978,5 +1153,17 @@ h1 { margin: 0; font-size: 1.8rem; color:#7a4318; }
    * Fim do script
    ************************************************************************/
   </script>
+    
+    
+    
+<footer>
+  © 2025 <strong>Acordes no Ponto</strong>. Todos os direitos reservados.
+  <a href="politica-privacidade.html">Política de Privacidade</a> |
+  <a href="termos-de-uso.html">Termos de Uso</a>
+</footer>
+
+    
+        
+    
 </body>
 </html>
